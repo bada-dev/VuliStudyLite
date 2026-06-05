@@ -1,10 +1,3 @@
-# ============================================================
-# VuliStudy backend — v2.0 (simplified)
-# Focus-timer study buddy. Username + password accounts, a world
-# leaderboard, study-time sync and an admin panel. Everything that
-# didn't directly help a student focus (shop/coins, premium, the
-# AI coach, friends & group chats) has been removed.
-# ============================================================
 import os
 import sqlite3
 import time
@@ -12,6 +5,7 @@ import hashlib
 import binascii
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from datetime import datetime, timezone, timedelta
+#
 
 app = Flask(__name__)
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
@@ -48,7 +42,7 @@ def init_db():
         minutes INTEGER DEFAULT 0,
         PRIMARY KEY (username, week_start)
     )''')
-    # Forward-compatible: add the password column if upgrading an old DB.
+    #Forward-compatible: add the password column if upgrading an old DB
     try:
         conn.execute("ALTER TABLE users ADD COLUMN password_hash TEXT NOT NULL DEFAULT ''")
     except Exception:
@@ -181,7 +175,7 @@ def sync_score():
         streak = min(int(data.get('streak', 0)), MAX_STREAK)
         reborns = min(int(data.get('reborns', 0)), MAX_REBORNS)
 
-        # Anti-tamper: minutes can never go down, and max gain per sync is 480 min (8 hrs)
+        # Anti-tamper. AI highly suggested I added an antitemper: minutes can never go down, and max gain per sync is 480 min (8 hrs)
         if total_minutes < old_minutes:
             total_minutes = old_minutes
         elif total_minutes - old_minutes > 480:
@@ -312,7 +306,7 @@ def admin_get_user():
         if not user:
             return jsonify({'success': False, 'error': 'User not found on server'})
         u = dict(user)
-        u.pop('password_hash', None)  # never expose the hash
+        u.pop('password_hash', None)  # never expose the hash for the + security
         return jsonify({'success': True, 'user': u})
     finally:
         conn.close()
