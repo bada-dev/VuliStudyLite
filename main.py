@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 app = Flask(__name__)
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
+# I forgot to mention, but "ADMIN_PASSWORD" is NOT the admin password, its picked up by render.com, and replaces it with my actual admin password. If you follow the variable youll see its referred to as ADMIN_PASSWORD whihc is immediately replaced by render 
 
 
 def get_db():
